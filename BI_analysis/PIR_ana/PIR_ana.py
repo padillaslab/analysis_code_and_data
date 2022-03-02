@@ -1,4 +1,5 @@
 from cmath import exp
+import csv
 from turtle import color
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -51,21 +52,24 @@ BI_df['Exp. Day'] = analysis_function.get_exp_day_arr(BI_df['Timestamp'], dateti
 # plt.show()
 
 ## BI analysis
-for psc in range(1,11):
-    if (psc == 7 or psc == 9):
-        continue
-    psc_name = 'Count ' + str(psc)
-    for day in range(1,4):
-        print(psc_name)
-        print(day)
-        temp_data = analysis_function.get_day_col_arr(BI_df, day, psc_name, 'Exp. Day')
-        day_sum = 0
-        night_sum = 0
-        for count in temp_data[0:720]:
-            day_sum+=count
-        for count in temp_data[720:1440]:
-            night_sum+=count
-        print('Day sum: ' + str(day_sum))
-        print('night sum: ' + str(night_sum))
-        plt.plot(temp_data, color='red')
-        plt.show()
+final_arr = []
+psc=6
+psc_name = 'Count ' + str(psc)
+for day in range(1,5):
+    print(psc_name)
+    print(day)
+    temp_data = analysis_function.get_day_col_arr(BI_df, day, psc_name, 'Exp. Day')
+    temp_data = analysis_function.day_fill_in_bootleg_array(temp_data)
+    temp_data = analysis_function.bin_arr(temp_data, 5)
+    final_arr = final_arr + temp_data
+
+for ite in range(len(final_arr)):
+    final_arr[ite] = [final_arr[ite]]
+
+final_arr = [[],[],[],[],[],[],[]] + final_arr
+
+with open("pir_clk_lab_1.csv", "w", newline='') as f:
+    write = csv.writer(f)
+    write.writerows(final_arr)
+    
+    
